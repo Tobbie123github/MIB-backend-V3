@@ -9,11 +9,12 @@ const router = express.Router();
 // ── Provider rotation lists ──────────────────────────────────────────────────
 const COMPREHENSIVE_PROVIDERS = ["tangerine-comprehensive", "existing", "nsia"];
 
-const THIRD_PARTY_PROVIDERS = [
-  "existing",
-  "tangerine-third-party",
-  "staging-third-party",
-];
+const THIRD_PARTY_PROVIDERS = ["existing", "tangerine-third-party"];
+// const THIRD_PARTY_PROVIDERS = [
+//   "existing",
+//   "tangerine-third-party",
+//   "staging-third-party",
+// ];
 
 // ── Get next provider (rotates automatically, persisted in MongoDB) ───────────
 router.get("/next-provider", auth, async (req, res) => {

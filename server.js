@@ -12,9 +12,27 @@ const policyRoutes = require("./routes/policy");
 const app = express();
 
 // ── CORS (must be before everything else) ─────────────────────────────────────
+// const allowedOrigins = [
+//   "http://localhost:3000",
+//   "http://localhost:5500",
+//   "http://127.0.0.1:5500",
+//   "http://localhost:8080",
+//   "https://yourdomain.com",
+//   "https://www.yourdomain.com",
+//   "https://go-mega.onrender.com",
+// ];
+
+const allowedOrigins = ["http://localhost"];
+
 const corsOptions = {
   origin: function (origin, callback) {
-    callback(null, true);
+    if (!origin) return callback(null, true);
+
+    if (allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error("Not allowed by CORS: " + origin));
+    }
   },
   credentials: true,
   methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
@@ -22,7 +40,7 @@ const corsOptions = {
 };
 
 app.use(cors(corsOptions));
-app.options("/{*any}", cors(corsOptions)); // handle preflight for ALL routes (Express 5)
+app.options("/{*any}", cors(corsOptions));
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -177,21 +195,21 @@ app.post("/api/cors/tangerine-third-party", async (req, res) => {
   }
 });
 
-// // ── Staging Third Party ───────────────────────────────────────────────────────
-// app.post("/api/cors/staging-third-party", async (req, res) => {
-//   try {
-//     const response = await axios.post(
-//       "https://staging-api.myinsurebank.com/api/third-party/generate-policy",
-//       req.body,
-//       { headers: { "Content-Type": "application/json" } }
-//     );
-//     res.json(response.data);
-//         console.log(response)
-//   } catch (error) {
-//     console.error("Staging Third Party error:", error.message);
-//     res.status(500).json({ error: "Third party request failed" });
-//   }
-// });
+// ── Staging Third Party ───────────────────────────────────────────────────────
+app.post("/api/cors/staging-third-party", async (req, res) => {
+  try {
+    const response = await axios.post(
+      "https://staging-api.myinsurebank.com/api/third-party/generate-policy",
+      req.body,
+      { headers: { "Content-Type": "application/json" } },
+    );
+    res.json(response.data);
+    console.log(response);
+  } catch (error) {
+    console.error("Staging Third Party error:", error.message);
+    res.status(500).json({ error: "Third party request failed" });
+  }
+});
 
 // ── NSIA Motor (multipart/form-data) ─────────────────────────────────────────
 app.post("/api/cors/nsia-motor", async (req, res) => {
