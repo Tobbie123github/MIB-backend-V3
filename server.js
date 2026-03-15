@@ -22,7 +22,7 @@ const app = express();
 //   "https://go-mega.onrender.com",
 // ];
 
-const allowedOrigins = ["http://localhost"];
+const allowedOrigins = ["http://localhost", "https://mib.pra.insure"];
 
 const corsOptions = {
   origin: function (origin, callback) {
